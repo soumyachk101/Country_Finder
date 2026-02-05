@@ -1,4 +1,3 @@
-// Use valid data source for Frontend Mentor Challenge (the-user01 repo)
 const apiURL = 'https://raw.githubusercontent.com/the-user01/rest-countries-frontend-mentor/main/data.json';
 const grid = document.getElementById('countries-grid');
 const searchInput = document.getElementById('search-input');
@@ -10,22 +9,18 @@ const backBtn = document.getElementById('back-btn');
 
 let allCountries = [];
 
-// Fetch Data
 async function fetchCountries() {
     try {
         grid.innerHTML = '<p class="loading">Loading country data... please wait...</p>';
-        console.log("Fetching from:", apiURL);
 
         const res = await fetch(apiURL);
         if (!res.ok) throw new Error(`Server returned status: ${res.status}`);
 
         const data = await res.json();
-        console.log("Data loaded:", data.length, "countries");
-
         allCountries = data;
         renderCountries(data);
     } catch (error) {
-        console.error("Fetch error:", error);
+        console.error(error);
         grid.innerHTML = `<div class="loading" style="text-align:center; padding: 20px;">
             <p style="color: red; font-weight: bold; font-size: 1.2rem;">Unable to load data.</p>
             <p style="margin: 10px 0;">Reason: ${error.message}</p>
@@ -33,7 +28,6 @@ async function fetchCountries() {
     }
 }
 
-// Render Countries
 function renderCountries(countries) {
     grid.innerHTML = '';
 
@@ -47,7 +41,6 @@ function renderCountries(countries) {
         card.classList.add('country-card');
         card.addEventListener('click', () => showDetails(country));
 
-        // MAPPING FOR FRONTEND MENTOR JSON DATA (V2 STYLE)
         const name = country.name || 'Unknown';
         const flag = country.flags ? country.flags.svg : (country.flag || '');
         const population = (country.population !== undefined) ? country.population.toLocaleString() : 'N/A';
@@ -71,7 +64,6 @@ function renderCountries(countries) {
     });
 }
 
-// Search & Filter
 function filterCountries() {
     const searchTerm = searchInput.value.toLowerCase();
     const regionValue = regionFilter.value;
@@ -86,9 +78,7 @@ function filterCountries() {
     renderCountries(filtered);
 }
 
-// Show Details
 function showDetails(country) {
-    // MAPPING FOR FRONTEND MENTOR JSON DATA (V2 STYLE)
     const flag = country.flags ? country.flags.svg : (country.flag || '');
     const name = country.name;
     const nativeName = country.nativeName || 'N/A';
@@ -98,21 +88,17 @@ function showDetails(country) {
     const capital = country.capital || 'N/A';
     const tld = country.topLevelDomain ? country.topLevelDomain[0] : 'N/A';
 
-    // Currencies (Array of objects)
     const currencies = country.currencies
         ? country.currencies.map(c => c.name).join(', ')
         : 'N/A';
 
-    // Languages (Array of objects)
     const languages = country.languages
         ? country.languages.map(l => l.name).join(', ')
         : 'N/A';
 
-    // Borders (Array of codes)
     const borders = country.borders || [];
-
-    // Resolve border codes
     let borderButtons = '';
+
     if (borders.length > 0) {
         borderButtons = borders.map(code => {
             const borderCountry = allCountries.find(c => c.alpha3Code === code);
@@ -123,7 +109,6 @@ function showDetails(country) {
         borderButtons = '<span>None</span>';
     }
 
-    // Map Coordinates
     const latlng = country.latlng || [0, 0];
 
     modalContent.innerHTML = `
@@ -159,13 +144,11 @@ function showDetails(country) {
     detailModal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 
-    // Initialize Map
     setTimeout(() => {
         if (window.myMap) {
-            window.myMap.remove(); // Remove existing map instance
+            window.myMap.remove();
         }
 
-        // Check if latlng is valid
         if (latlng.length === 2) {
             window.myMap = L.map('map').setView(latlng, 5);
 
@@ -177,7 +160,6 @@ function showDetails(country) {
                 .bindPopup(`<b>${name}</b>`)
                 .openPopup();
 
-            // Fix for map not rendering correctly in hidden div initially
             window.myMap.invalidateSize();
         } else {
             document.getElementById('map').innerHTML = '<p style="text-align:center; padding: 20px;">Map data not available for this location.</p>';
@@ -185,13 +167,11 @@ function showDetails(country) {
     }, 100);
 }
 
-// Global function
 window.openBorder = (code) => {
     const country = allCountries.find(c => c.alpha3Code === code);
     if (country) showDetails(country);
 };
 
-// Toggle Theme
 function toggleTheme() {
     const isDark = document.body.getAttribute('data-theme') === 'dark';
     if (isDark) {
@@ -203,7 +183,6 @@ function toggleTheme() {
     }
 }
 
-// Initialize
 searchInput.addEventListener('input', filterCountries);
 regionFilter.addEventListener('change', filterCountries);
 themeToggle.addEventListener('click', toggleTheme);
@@ -212,7 +191,6 @@ backBtn.addEventListener('click', () => {
     document.body.style.overflow = 'auto';
 });
 
-// Load saved theme
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark') {
     document.body.setAttribute('data-theme', 'dark');
