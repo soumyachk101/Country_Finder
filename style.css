@@ -1,10 +1,22 @@
 :root {
-    --bg-color: hsl(0, 0%, 98%);
-    --text-color: hsl(200, 15%, 8%);
-    --element-bg: hsl(0, 0%, 100%);
-    --input-color: hsl(0, 0%, 52%);
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    /* Mapped from user request:
+       Background: #FFFFFF to #F8F0FF (Handled in body)
+       Headline: #1A1A1A
+       Sub-headline (Accent): #7B68EE
+       Body: #696969
+       Button Dark: #1E1E1E
+    */
+    --bg-color: #FFFFFF;
+    /* Fallback */
+    --text-color: #1A1A1A;
+    /* Dark Gray/Black */
+    --element-bg: #FFFFFF;
+    --input-color: #696969;
+    /* Body Lighter Gray */
+    --accent-color: #7B68EE;
+    /* Purple */
+    --shadow: 0 4px 6px -1px rgba(123, 104, 238, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 10px 15px -3px rgba(123, 104, 238, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 [data-theme="dark"] {
@@ -12,6 +24,7 @@
     --text-color: hsl(0, 0%, 100%);
     --element-bg: hsl(209, 23%, 22%);
     --input-color: hsl(0, 0%, 100%);
+    --accent-color: #7B68EE;
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
     --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
 }
@@ -24,10 +37,18 @@
 
 body {
     font-family: 'Nunito Sans', sans-serif;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F8F0FF 100%);
+    /* Light Gradient */
     background-color: var(--bg-color);
+    /* Fallback */
     color: var(--text-color);
     transition: background-color 0.3s ease, color 0.3s ease;
     min-height: 100vh;
+}
+
+/* Dark mode override for gradient */
+[data-theme="dark"] body {
+    background: var(--bg-color);
 }
 
 .container {
@@ -56,6 +77,8 @@ header .container {
 h1 {
     font-size: 1.25rem;
     font-weight: 800;
+    color: var(--text-color);
+    /* Matches #1A1A1A */
 }
 
 #theme-toggle {
@@ -74,7 +97,8 @@ h1 {
 }
 
 #theme-toggle:hover {
-    background-color: rgba(128, 128, 128, 0.1);
+    background-color: rgba(123, 104, 238, 0.1);
+    /* Purple tint hover */
 }
 
 .controls-container {
@@ -101,6 +125,12 @@ h1 {
 .search-wrapper:focus-within {
     transform: translateY(-2px);
     box-shadow: var(--shadow-hover);
+    border: 1px solid var(--accent-color);
+    /* Accent on focus */
+}
+
+.search-wrapper i {
+    color: var(--input-color);
 }
 
 .search-wrapper input {
@@ -115,6 +145,7 @@ h1 {
 
 .search-wrapper input::placeholder {
     color: var(--input-color);
+    /* Matches #696969 */
     font-weight: 400;
 }
 
@@ -218,8 +249,9 @@ h1 {
 }
 
 .back-btn {
-    background-color: var(--element-bg);
-    color: var(--text-color);
+    background-color: #1E1E1E;
+    /* Dark Button Color */
+    color: #FFFFFF;
     border: none;
     box-shadow: var(--shadow);
     padding: 10px 32px;
@@ -235,6 +267,12 @@ h1 {
     margin-right: auto;
     width: fit-content;
     display: block;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.back-btn:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
 }
 
 #detail-modal>* {
@@ -269,6 +307,7 @@ h1 {
     font-size: 1.5rem;
     font-weight: 800;
     margin-bottom: 24px;
+    color: var(--text-color);
 }
 
 .detail-info-grid {
@@ -281,10 +320,13 @@ h1 {
 .detail-info-group p {
     margin-bottom: 10px;
     font-weight: 600;
+    color: var(--text-color);
 }
 
 .detail-info-group span {
     font-weight: 300;
+    color: var(--input-color);
+    /* Lighter gray for data */
 }
 
 .border-countries {
@@ -298,24 +340,30 @@ h1 {
 .border-countries strong {
     font-weight: 600;
     white-space: nowrap;
+    color: var(--text-color);
 }
 
 .border-btn {
-    background-color: var(--element-bg);
-    color: var(--text-color);
-    border: none;
-    box-shadow: var(--shadow);
+    background-color: #FFFFFF;
+    /* White Background - Force requested color */
+    color: #1A1A1A;
+    /* Dark Text - Force requested color to ensure visibility against white background */
+    border: 1px solid #D3D3D3;
+    /* Light Gray Border */
+    box-shadow: none;
+    /* Removed shadow for cleaner look matching the request */
     padding: 6px 20px;
     border-radius: 4px;
     cursor: pointer;
     font-family: inherit;
     font-size: 0.9rem;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .border-btn:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-hover);
+    border-color: var(--accent-color);
 }
 
 #map {
