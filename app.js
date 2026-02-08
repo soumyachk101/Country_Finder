@@ -36,9 +36,10 @@ function renderCountries(countries) {
         return;
     }
 
-    countries.forEach(country => {
+    countries.forEach((country, index) => {
         const card = document.createElement('div');
         card.classList.add('country-card');
+        card.style.animationDelay = `${Math.min(index * 0.05, 1)}s`;
         card.addEventListener('click', () => showDetails(country));
 
         const name = country.name || 'Unknown';
@@ -174,26 +175,48 @@ window.openBorder = (code) => {
 
 function toggleTheme() {
     const isDark = document.body.getAttribute('data-theme') === 'dark';
+    const icon = themeToggle.querySelector('i');
+    const text = themeToggle.querySelector('span');
+
     if (isDark) {
         document.body.removeAttribute('data-theme');
         localStorage.setItem('theme', 'light');
+        icon.className = 'fa-regular fa-moon';
+        text.textContent = 'Dark Mode';
     } else {
         document.body.setAttribute('data-theme', 'dark');
         localStorage.setItem('theme', 'dark');
+        icon.className = 'fa-regular fa-sun';
+        text.textContent = 'Light Mode';
     }
 }
 
 searchInput.addEventListener('input', filterCountries);
 regionFilter.addEventListener('change', filterCountries);
 themeToggle.addEventListener('click', toggleTheme);
-backBtn.addEventListener('click', () => {
+function closeModal() {
     detailModal.classList.add('hidden');
     document.body.style.overflow = 'auto';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+backBtn.addEventListener('click', closeModal);
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !detailModal.classList.contains('hidden')) {
+        closeModal();
+    }
 });
 
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark') {
     document.body.setAttribute('data-theme', 'dark');
+    const icon = themeToggle.querySelector('i');
+    const text = themeToggle.querySelector('span');
+    icon.className = 'fa-regular fa-sun';
+    text.textContent = 'Light Mode';
 }
+
+document.body.style.scrollBehavior = 'smooth';
 
 fetchCountries();
